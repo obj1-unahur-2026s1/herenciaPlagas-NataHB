@@ -1,43 +1,33 @@
-class Plaga {
-    var poblacion
-    method transmiteEnfermedad() {
-        return poblacion >= 10 && self.condicionAdicional()
-    } 
-    method condicionAdicional() 
-    method nivelDeDaño()
-    method atacar(unElemento){
-        unElemento.recibirAtaqueDe(self)
-        poblacion = poblacion * 1.1
-    }
+class Plaga{
+  var poblacion
+
+  method nivelDeDaño()
+  method transmitenEnfermedades() = poblacion >= 10
+  method atacarElemento(elem) { elem.serAtacadoPor(self) ; poblacion *= 1.1} 
 }
 
-class Cucarachas inherits Plaga {
-  var pesoPromedio 
-  override method nivelDeDaño() {
-    return poblacion * 0.5
+class PlagaCucarachas inherits Plaga{
+  var pesoPromedio
+  override method nivelDeDaño() = poblacion / 2
+  override method transmitenEnfermedades() = super() && pesoPromedio >= 10
+  override method atacarElemento(elem) {
+    super(elem); 
+    pesoPromedio += 2
   }
-  override method condicionAdicional() {
-    return pesoPromedio >= 10
+}
+
+class PlagaPulgas inherits Plaga{
+  override method nivelDeDaño() = poblacion * 2  
+}
+
+class PlagaGarrapatas inherits PlagaPulgas{
+  override method atacarElemento(elem) {
+    elem.serAtacadoPor(self);
+    poblacion *= 1.2
   }
-  override method atacar(unElemento){
-        super(unElemento)
-        pesoPromedio = pesoPromedio + 2
-    }
 }
 
-class Pulgas inherits Plaga {
-  override method nivelDeDaño() = poblacion * 2
-  override method condicionAdicional() = true
-}
-
-class Garrapata inherits Pulgas {
-  override method atacar(unElemento){
-        unElemento.recibirAtaqueDe(self)
-        poblacion = poblacion * 1.2
-    }
-}
-
-class Mosquitos inherits Plaga {
+class PlagaMosquitos inherits Plaga{
   override method nivelDeDaño() = poblacion
-  override method condicionAdicional() = poblacion % 3 == 0 
+  override method transmitenEnfermedades() = super() && poblacion % 3 == 0
 }
